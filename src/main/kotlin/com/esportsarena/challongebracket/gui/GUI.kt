@@ -32,23 +32,8 @@ class GUI {
     val bottomName = addTextField("Bottom Name", 115, 15 + (line * lineSpacing), 160)
     val bottomScore = addTextField("Bottom Score", 285, 15 + (line++ * lineSpacing), 90, "0")
 
-    fun addTextField(key: String, x: Int, y: Int, width: Int, defaultValue: String = "", color: Color = Color.LIGHT_GRAY): JTextField {
-        val field = getCachedTextField(key, defaultValue)
-        field.addFocusListener(object: FocusListener {
-            override fun focusGained(p0: FocusEvent) {
-                field.select(0, field.text.length)
-            }
-            override fun focusLost(p0: FocusEvent) {
-                field.select(0, 0)
-            }
-        })
-        field.bounds = Rectangle(x + 4, y + 21, width - 8, 17)
-        frame.add(field)
-        val label = JLabel(key)
-        label.bounds = Rectangle(x + 4, y + 4, width - 8, 17)
-        frame.add(label)
-        val box = JRectangle(Rectangle(x, y, width, 41), color)
-        frame.add(box)
+    fun addTextField(key: String, x: Int, y: Int, width: Int, defaultValue: String = "", color: Color = Color.LIGHT_GRAY): FzzyTextField {
+        val field = FzzyTextField(this, key, x, y, width, defaultValue, color)
         return field
     }
     fun addCheckBox(key: String, x: Int, y: Int, defaultValue: Boolean = false, onChange: (Boolean) -> Unit = {}): JCheckBox {
@@ -63,7 +48,7 @@ class GUI {
         box.background = Color.LIGHT_GRAY
         return box
     }
-    private val configFile: LinkedTreeMap<String, String>
+    val configFile: LinkedTreeMap<String, String>
         get() {
             val f = File("config.json")
             if (!f.exists()) f.createNewFile()
@@ -74,31 +59,12 @@ class GUI {
                 gson.fromJson(text, object : TypeToken<Map<String, String>>() {}.type)
         }
 
-    private fun saveToFile(key: String, value: String) {
+    fun saveToFile(key: String, value: String) {
         val save = configFile
         save[key] = value
         val writer = FileWriter("config.json")
         writer.write(gson.toJson(save))
         writer.close()
-    }
-
-    fun getCachedTextField(key: String, defaultValue: String = ""): JTextField {
-        val field = JTextField(configFile.getOrDefault(key, defaultValue))
-        field.preferredSize = Dimension(300, 20)
-
-        field.document.addDocumentListener(object : DocumentListener {
-            override fun insertUpdate(e: DocumentEvent) {
-                saveToFile(key, field.text)
-            }
-
-            override fun removeUpdate(e: DocumentEvent) {
-                saveToFile(key, field.text)
-            }
-
-            override fun changedUpdate(e: DocumentEvent) {
-            }
-        })
-        return field
     }
 
     fun getCachedCheckBox(key: String, defaultValue: Boolean = false, onChange: (Boolean) -> Unit = {}): JCheckBox {
