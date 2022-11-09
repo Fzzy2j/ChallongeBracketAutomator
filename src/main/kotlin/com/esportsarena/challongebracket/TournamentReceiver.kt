@@ -19,7 +19,11 @@ class TournamentReceiver {
             while (true) {
                 try {
                     update()
+                    gui.runningLabel.isVisible = true
+                    gui.stoppedLabel.isVisible = false
                 } catch (e: Exception) {
+                    gui.stoppedLabel.isVisible = true
+                    gui.runningLabel.isVisible = false
                     println("failed to update bracket")
                     e.printStackTrace()
                 }
@@ -40,8 +44,8 @@ class TournamentReceiver {
 
     fun update() {
         val url =
-            URL("https://api.challonge.com/v1/tournaments/${parseIdFromUrl(gui.getString("Challonge Tournament Link")!!)}.json" +
-                    "?api_key=${gui.getString("Challonge API Key")}" +
+            URL("https://api.challonge.com/v1/tournaments/${parseIdFromUrl(gui.challongeLink.text)}.json" +
+                    "?api_key=${gui.challongeApiKey.text}" +
                     "&include_participants=1" +
                     "&include_matches=1")
         val conn = url.openConnection() as HttpURLConnection
@@ -89,19 +93,19 @@ class TournamentReceiver {
             insertMatchesIntoGraphic(winners, conversion)
         }
 
-        val reset = gui.getBoolean("Grand Finals Reset")!!
+        val reset = gui.resetEnabled.isSelected
         if (reset) {
-            VMix.setImageVisibleOn(gui.getString("Vmix Input Name")!!, "Image2.Source")
-            VMix.setTitleText(gui.getString("Reset Top Name")!!, gui.getString("Vmix Input Name")!!, "wP1 Name10.Text")
-            VMix.setTitleText(gui.getString("Reset Bottom Name")!!, gui.getString("Vmix Input Name")!!, "wP2 Name10.Text")
-            VMix.setTitleText(gui.getString("Reset Top Score")!!, gui.getString("Vmix Input Name")!!, "wP1 Score10.Text")
-            VMix.setTitleText(gui.getString("Reset Bottom Score")!!, gui.getString("Vmix Input Name")!!, "wP2 Score10.Text")
+            VMix.setImageVisibleOn(gui.vMixInputName.text, "Image2.Source")
+            VMix.setTitleText(gui.topName.text, gui.vMixInputName.text, "wP1 Name10.Text")
+            VMix.setTitleText(gui.bottomName.text, gui.vMixInputName.text, "wP2 Name10.Text")
+            VMix.setTitleText(gui.topScore.text, gui.vMixInputName.text, "wP1 Score10.Text")
+            VMix.setTitleText(gui.bottomScore.text, gui.vMixInputName.text, "wP2 Score10.Text")
         } else {
-            VMix.setImageVisibleOff(gui.getString("Vmix Input Name")!!, "Image2.Source")
-            VMix.setTitleText("", gui.getString("Vmix Input Name")!!, "wP1 Name10.Text")
-            VMix.setTitleText("", gui.getString("Vmix Input Name")!!, "wP2 Name10.Text")
-            VMix.setTitleText("", gui.getString("Vmix Input Name")!!, "wP1 Score10.Text")
-            VMix.setTitleText("", gui.getString("Vmix Input Name")!!, "wP2 Score10.Text")
+            VMix.setImageVisibleOff(gui.vMixInputName.text, "Image2.Source")
+            VMix.setTitleText("", gui.vMixInputName.text, "wP1 Name10.Text")
+            VMix.setTitleText("", gui.vMixInputName.text, "wP2 Name10.Text")
+            VMix.setTitleText("", gui.vMixInputName.text, "wP1 Score10.Text")
+            VMix.setTitleText("", gui.vMixInputName.text, "wP2 Score10.Text")
         }
     }
 
@@ -111,24 +115,24 @@ class TournamentReceiver {
             if (match == null || match.loser_id == 0 || match.winner_id == 0) {
                 VMix.setTitleText(
                     if (match.player1_id != 0) participants[match.player1_id]!!.name else "",
-                    gui.getString("Vmix Input Name")!!,
+                    gui.vMixInputName.text,
                     "wP1 Name$graphicIndex.Text"
                 )
                 VMix.setTitleText(
                     if (match.player2_id != 0) participants[match.player2_id]!!.name else "",
-                    gui.getString("Vmix Input Name")!!,
+                    gui.vMixInputName.text,
                     "wP2 Name$graphicIndex.Text"
                 )
-                VMix.setTitleText("0", gui.getString("Vmix Input Name")!!, "wP1 Score$graphicIndex.Text")
-                VMix.setTitleText("0", gui.getString("Vmix Input Name")!!, "wP2 Score$graphicIndex.Text")
+                VMix.setTitleText("0", gui.vMixInputName.text, "wP1 Score$graphicIndex.Text")
+                VMix.setTitleText("0", gui.vMixInputName.text, "wP2 Score$graphicIndex.Text")
                 continue
             }
             val formatIndex = graphicIndex.toString().replace("0", "")
             val scores = match.scores_csv.split("-").sortedBy { it.toInt() }
-            VMix.setTitleText(participants[match.loser_id]!!.name, gui.getString("Vmix Input Name")!!, "wP1 Name$formatIndex.Text")
-            VMix.setTitleText(participants[match.winner_id]!!.name, gui.getString("Vmix Input Name")!!, "wP2 Name$formatIndex.Text")
-            VMix.setTitleText(scores[0], gui.getString("Vmix Input Name")!!, "wP1 Score$formatIndex.Text")
-            VMix.setTitleText(scores[1], gui.getString("Vmix Input Name")!!, "wP2 Score$formatIndex.Text")
+            VMix.setTitleText(participants[match.loser_id]!!.name, gui.vMixInputName.text, "wP1 Name$formatIndex.Text")
+            VMix.setTitleText(participants[match.winner_id]!!.name, gui.vMixInputName.text, "wP2 Name$formatIndex.Text")
+            VMix.setTitleText(scores[0], gui.vMixInputName.text, "wP1 Score$formatIndex.Text")
+            VMix.setTitleText(scores[1], gui.vMixInputName.text, "wP2 Score$formatIndex.Text")
         }
     }
 
