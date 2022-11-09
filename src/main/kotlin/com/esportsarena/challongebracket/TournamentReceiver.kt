@@ -21,6 +21,7 @@ class TournamentReceiver {
                     update()
                 } catch (e: Exception) {
                     println("failed to update bracket")
+                    e.printStackTrace()
                 }
                 Thread.sleep(7000)
             }

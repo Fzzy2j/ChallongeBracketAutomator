@@ -18,5 +18,7 @@ fun main(args: Array<String>) {
     gui = GUI()
     val receiver = TournamentReceiver()
     receiver.start()
+    while (true) {
+    }
 }
 

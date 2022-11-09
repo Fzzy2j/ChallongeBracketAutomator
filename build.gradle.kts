@@ -13,14 +13,6 @@ repositories {
     mavenCentral()
 }
 
-tasks {
-    withType<Jar> {
-        manifest {
-            attributes["Main-Class"] = "me.fzzy.MainKt"
-        }
-    }
-}
-
 dependencies {
     implementation("org.json:json:20220924")
     implementation("com.google.code.gson:gson:2.10")
@@ -36,5 +28,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("com.esportsarena.challongebracket.MainKt")
 }
