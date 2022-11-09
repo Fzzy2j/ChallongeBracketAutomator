@@ -5,6 +5,8 @@ import com.esportsarena.challongebracket.challonge.Participant
 import com.esportsarena.challongebracket.util.VMix
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileWriter
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -24,8 +26,11 @@ class TournamentReceiver {
                 } catch (e: Exception) {
                     gui.stoppedLabel.isVisible = true
                     gui.runningLabel.isVisible = false
-                    println("failed to update bracket")
                     e.printStackTrace()
+                    val lastError = File("lastError.txt")
+                    val writer = FileWriter(lastError, false)
+                    writer.write(e.stackTraceToString())
+                    writer.close()
                 }
                 Thread.sleep(7000)
             }

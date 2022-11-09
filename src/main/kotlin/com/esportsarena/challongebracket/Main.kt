@@ -10,7 +10,7 @@ lateinit var gui: GUI
 fun main(args: Array<String>) {
     gui = GUI()
     val receiver = TournamentReceiver()
-    //receiver.start()
+    receiver.start()
     while (true) {
     }
 }
