@@ -6,9 +6,17 @@ import com.google.gson.reflect.TypeToken
 import java.awt.*
 import java.io.File
 import java.io.FileWriter
+import javax.imageio.ImageIO
 import javax.swing.*
 
 class GUI {
+
+    class ImagePanel(val image: Image) : JComponent() {
+        override fun paintComponent(g: Graphics) {
+            super.paintComponent(g)
+            g.drawImage(image, 0, 0, this)
+        }
+    }
 
     val frame = JFrame("Fzzy Bracket Updater")
 
@@ -120,6 +128,11 @@ class GUI {
         stoppedLabel = JLabel(stoppedIcon)
         stoppedLabel.bounds = Rectangle(365, 200, stoppedIcon.iconWidth, stoppedIcon.iconHeight)
         frame.add(stoppedLabel)
+
+        val bgImage = ImageIcon(Toolkit.getDefaultToolkit().getImage(javaClass.getResource("/bg.png")))
+        val bg = JLabel(bgImage)
+        bg.bounds = Rectangle(0, 0, bgImage.iconWidth, bgImage.iconHeight)
+        frame.add(bg)
 
         topName.setVisible(resetEnabled.isSelected)
         topScore.setVisible(resetEnabled.isSelected)
