@@ -14,20 +14,29 @@ class FzzyTextField(val gui: GUI, key: String, x: Int, y: Int, width: Int, defau
 
     val box: JRectangle
     val label: JLabel
-    val field: JTextField
+    val textField: JTextField
+
+    val text: String
+        get() = textField.text
+
+    fun setVisible(visible: Boolean) {
+        box.isVisible = visible
+        label.isVisible = visible
+        textField.isVisible = visible
+    }
 
     init {
-        field = getCachedTextField(key, defaultValue)
-        field.addFocusListener(object: FocusListener {
+        textField = getCachedTextField(key, defaultValue)
+        textField.addFocusListener(object: FocusListener {
             override fun focusGained(p0: FocusEvent) {
-                field.select(0, field.text.length)
+                textField.select(0, textField.text.length)
             }
             override fun focusLost(p0: FocusEvent) {
-                field.select(0, 0)
+                textField.select(0, 0)
             }
         })
-        field.bounds = Rectangle(x + 4, y + 21, width - 8, 17)
-        gui.frame.add(field)
+        textField.bounds = Rectangle(x + 4, y + 21, width - 8, 17)
+        gui.frame.add(textField)
 
         label = JLabel(key)
         label.bounds = Rectangle(x + 4, y + 4, width - 8, 17)

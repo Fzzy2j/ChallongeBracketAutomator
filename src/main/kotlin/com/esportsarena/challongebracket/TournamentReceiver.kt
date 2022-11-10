@@ -49,15 +49,19 @@ class TournamentReceiver {
 
     fun update() {
         val url =
-            URL("https://api.challonge.com/v1/tournaments/${parseIdFromUrl(gui.challongeLink.text)}.json" +
-                    "?api_key=${gui.challongeApiKey.text}" +
-                    "&include_participants=1" +
-                    "&include_matches=1")
+            URL(
+                "https://api.challonge.com/v1/tournaments/${parseIdFromUrl(gui.challongeLink.text)}.json" +
+                        "?api_key=${gui.challongeApiKey.text}" +
+                        "&include_participants=1" +
+                        "&include_matches=1"
+            )
         val conn = url.openConnection() as HttpURLConnection
         conn.requestMethod = "GET"
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
+        conn.readTimeout = 5000
+        conn.connectTimeout = 5000
         val reader = BufferedReader(InputStreamReader(conn.inputStream))
-        val json = JSONObject(reader.lines().toList().joinToString("")).getJSONObject("tournament")
-
+        val json = JSONObject(reader.readText()).getJSONObject("tournament")
         participants.clear()
         matches.clear()
 

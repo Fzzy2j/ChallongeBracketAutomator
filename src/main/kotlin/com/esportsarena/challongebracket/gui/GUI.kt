@@ -26,7 +26,12 @@ class GUI {
     val vMixIP = addTextField("VMix IP", 15, 15 + (line++ * lineSpacing), 460, "localhost:8088")
     val vMixInputName = addTextField("VMix Input Name", 15, 15 + (line++ * lineSpacing), 460, "Top 8")
 
-    val resetEnabled = addCheckBox("Reset Enabled", 15, 15 + (line * lineSpacing), false)
+    val resetEnabled = addCheckBox("Reset Enabled", 15, 15 + (line * lineSpacing), false) {
+        topName.setVisible(it)
+        topScore.setVisible(it)
+        bottomName.setVisible(it)
+        bottomScore.setVisible(it)
+    }
     val topName = addTextField("Top Name", 115, 15 + (line * lineSpacing), 160)
     val topScore = addTextField("Top Score", 285, 15 + (line++ * lineSpacing), 90, "0")
     val bottomName = addTextField("Bottom Name", 115, 15 + (line * lineSpacing), 160)
@@ -104,6 +109,11 @@ class GUI {
         stoppedLabel = JLabel(stoppedIcon)
         stoppedLabel.bounds = Rectangle(400, 225, stoppedIcon.iconWidth, stoppedIcon.iconHeight)
         frame.add(stoppedLabel)
+
+        topName.setVisible(resetEnabled.isSelected)
+        topScore.setVisible(resetEnabled.isSelected)
+        bottomName.setVisible(resetEnabled.isSelected)
+        bottomScore.setVisible(resetEnabled.isSelected)
 
         val updateLeaderboardButton = JButton("Force Update")
         updateLeaderboardButton.addActionListener {
