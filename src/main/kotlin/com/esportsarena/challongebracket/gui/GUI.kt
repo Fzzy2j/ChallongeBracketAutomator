@@ -3,16 +3,10 @@ package com.esportsarena.challongebracket.gui
 import com.esportsarena.challongebracket.gson
 import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.reflect.TypeToken
-import org.w3c.dom.css.Rect
 import java.awt.*
-import java.awt.event.FocusEvent
-import java.awt.event.FocusListener
 import java.io.File
 import java.io.FileWriter
 import javax.swing.*
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
-import kotlin.concurrent.fixedRateTimer
 
 class GUI {
 
@@ -37,10 +31,27 @@ class GUI {
     val bottomName = addTextField("Bottom Name", 115, 15 + (line * lineSpacing), 160)
     val bottomScore = addTextField("Bottom Score", 285, 15 + (line++ * lineSpacing), 90, "0")
 
-    fun addTextField(key: String, x: Int, y: Int, width: Int, defaultValue: String = "", color: Color = Color.LIGHT_GRAY): FzzyTextField {
-        val field = FzzyTextField(this, key, x, y, width, defaultValue, color)
-        return field
+    val errorText = addLabel("", 5, 310, Color.RED)
+
+    fun addTextField(
+        key: String,
+        x: Int,
+        y: Int,
+        width: Int,
+        defaultValue: String = "",
+        color: Color = Color.LIGHT_GRAY
+    ): FzzyTextField {
+        return FzzyTextField(this, key, x, y, width, defaultValue, color)
     }
+
+    fun addLabel(startText: String, x: Int, y: Int, color: Color = Color.BLACK): JLabel {
+        val label = JLabel(startText)
+        label.foreground = color
+        label.bounds = Rectangle(x, y, 800, 17)
+        frame.add(label)
+        return label
+    }
+
     fun addCheckBox(key: String, x: Int, y: Int, defaultValue: Boolean = false, onChange: (Boolean) -> Unit = {}): JCheckBox {
         val label = JLabel(key)
         label.bounds = Rectangle(x + 4, y + 4, label.getFontMetrics(label.font).stringWidth(key), 17)
@@ -97,28 +108,23 @@ class GUI {
             Toolkit.getDefaultToolkit().getImage(javaClass.getResource("/icon64.png")),
             Toolkit.getDefaultToolkit().getImage(javaClass.getResource("/icon128.png"))
         )
-        frame.contentPane.background = Color.DARK_GRAY
+        frame.contentPane.background = Color(40, 50, 60)
 
         val runningIcon = ImageIcon(Toolkit.getDefaultToolkit().getImage(javaClass.getResource("/lightbulbspinning.gif")))
         runningLabel = JLabel(runningIcon)
-        runningLabel.bounds = Rectangle(400, 225, runningIcon.iconWidth, runningIcon.iconHeight)
+        runningLabel.bounds = Rectangle(365, 200, runningIcon.iconWidth, runningIcon.iconHeight)
         runningLabel.isVisible = false
         frame.add(runningLabel)
 
         val stoppedIcon = ImageIcon(Toolkit.getDefaultToolkit().getImage(javaClass.getResource("/lightbulbstopped.png")))
         stoppedLabel = JLabel(stoppedIcon)
-        stoppedLabel.bounds = Rectangle(400, 225, stoppedIcon.iconWidth, stoppedIcon.iconHeight)
+        stoppedLabel.bounds = Rectangle(365, 200, stoppedIcon.iconWidth, stoppedIcon.iconHeight)
         frame.add(stoppedLabel)
 
         topName.setVisible(resetEnabled.isSelected)
         topScore.setVisible(resetEnabled.isSelected)
         bottomName.setVisible(resetEnabled.isSelected)
         bottomScore.setVisible(resetEnabled.isSelected)
-
-        val updateLeaderboardButton = JButton("Force Update")
-        updateLeaderboardButton.addActionListener {
-        }
-        //frame.add(updateLeaderboardButton)
 
         frame.layout = null
         frame.setLocationRelativeTo(null)

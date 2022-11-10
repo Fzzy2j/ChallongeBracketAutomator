@@ -23,10 +23,11 @@ class TournamentReceiver {
                     update()
                     gui.runningLabel.isVisible = true
                     gui.stoppedLabel.isVisible = false
+                    gui.errorText.text = ""
                 } catch (e: Exception) {
                     gui.stoppedLabel.isVisible = true
                     gui.runningLabel.isVisible = false
-                    e.printStackTrace()
+                    gui.errorText.text = e.message
                     val lastError = File("lastError.txt")
                     val writer = FileWriter(lastError, false)
                     writer.write(e.stackTraceToString())
