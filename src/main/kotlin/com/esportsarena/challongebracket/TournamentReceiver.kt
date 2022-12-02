@@ -28,6 +28,7 @@ class TournamentReceiver {
                     gui.stoppedLabel.isVisible = true
                     gui.runningLabel.isVisible = false
                     gui.errorText.text = e.message
+                    e.printStackTrace()
                     val lastError = File("lastError.txt")
                     val writer = FileWriter(lastError, false)
                     writer.write(e.stackTraceToString())
@@ -121,23 +122,23 @@ class TournamentReceiver {
 
     fun insertMatchesIntoGraphic(matches: List<Match>, graphicIndices: List<Int>) {
         for ((i, graphicIndex) in graphicIndices.withIndex()) {
-            val match = matches[i]
+            val match = if (matches.size <= i) null else matches[i]
+            val formatIndex = graphicIndex.toString().replace("0", "")
             if (match == null || match.loser_id == 0 || match.winner_id == 0) {
                 VMix.setTitleText(
-                    if (match.player1_id != 0) participants[match.player1_id]!!.name else "",
+                    if (match != null && match.player1_id != 0) participants[match.player1_id]!!.name else "",
                     gui.vMixInputName.text,
-                    "wP1 Name$graphicIndex.Text"
+                    "wP1 Name$formatIndex.Text"
                 )
                 VMix.setTitleText(
-                    if (match.player2_id != 0) participants[match.player2_id]!!.name else "",
+                    if (match != null && match.player2_id != 0) participants[match.player2_id]!!.name else "",
                     gui.vMixInputName.text,
-                    "wP2 Name$graphicIndex.Text"
+                    "wP2 Name$formatIndex.Text"
                 )
-                VMix.setTitleText("0", gui.vMixInputName.text, "wP1 Score$graphicIndex.Text")
-                VMix.setTitleText("0", gui.vMixInputName.text, "wP2 Score$graphicIndex.Text")
+                VMix.setTitleText("0", gui.vMixInputName.text, "wP1 Score$formatIndex.Text")
+                VMix.setTitleText("0", gui.vMixInputName.text, "wP2 Score$formatIndex.Text")
                 continue
             }
-            val formatIndex = graphicIndex.toString().replace("0", "")
             val scores = match.scores_csv.split("-").sortedBy { it.toInt() }
             VMix.setTitleText(participants[match.loser_id]!!.name, gui.vMixInputName.text, "wP1 Name$formatIndex.Text")
             VMix.setTitleText(participants[match.winner_id]!!.name, gui.vMixInputName.text, "wP2 Name$formatIndex.Text")
